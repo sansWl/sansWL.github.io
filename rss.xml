@@ -5,7 +5,7 @@
         <title>SANSWL's BLOG</title>
         <link>https://sanswl.github.io//</link>
         <description>Retypeset是一款基于Astro框架的静态博客主题，中文名为重新编排。本主题以活版印字为设计灵感，通过建立全新的视觉规范，对所有页面进行重新编排，打造纸质书页般的阅读体验，再现版式之美。所见皆为细节，方寸尽显优雅。</description>
-        <lastBuildDate>Fri, 19 Sep 2025 15:15:43 GMT</lastBuildDate>
+        <lastBuildDate>Sat, 20 Sep 2025 09:23:45 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>Astro-Theme-Retypeset with Feed for Node.js</generator>
         <language>zh</language>
@@ -19,6 +19,331 @@
             <description><![CDATA[import openAi]]></description>
             <content:encoded><![CDATA[<pre><code>import openAi
 </code></pre>
+]]></content:encoded>
+        </item>
+        <item>
+            <title><![CDATA[Neo4j 快速入门学习]]></title>
+            <link>https://sanswl.github.io//posts/0471fd9f-059d/</link>
+            <guid isPermaLink="false">https://sanswl.github.io//posts/0471fd9f-059d/</guid>
+            <pubDate>Tue, 05 Aug 2025 00:00:00 GMT</pubDate>
+            <description><![CDATA[官网文档：https://neo4j.com/docs/getting-started/ 1 : 创建免费的云库 Neo4j AuraDB...]]></description>
+            <content:encoded><![CDATA[<h3>1. Neo4j 介绍</h3>
+<blockquote>
+<p><img src="https://img2024.cnblogs.com/blog/3426265/202508/3426265-20250805171510361-834497409.png" alt="" /></p>
+</blockquote>
+<p>官网文档：https://neo4j.com/docs/getting-started/</p>
+<h3>2. 数据库实例创建</h3>
+<ul>
+<li>1 : <em><strong>创建免费的云库</strong></em></li>
+</ul>
+<blockquote>
+<p>Neo4j AuraDB: Fully Managed Graph Database ：https://neo4j.com/product/auradb/</p>
+</blockquote>
+<ul>
+<li>2 : <em><strong>本地 docker 安装</strong></em></li>
+</ul>
+<blockquote>
+<p><code>docker pull neo4j:ubi9</code> 官方镜像：https://hub.docker.com/_/neo4j</p>
+</blockquote>
+<h3>2.1 配置文件</h3>
+<blockquote>
+<p><strong>配置文件目录：</strong> <img src="https://img2024.cnblogs.com/blog/3426265/202508/3426265-20250805182447717-767456032.png" alt="" /></p>
+</blockquote>
+<p><strong>eg:</strong></p>
+<pre><code>#server.memory.pagecache.size=10g  页缓存
+#dbms.memory.transaction.total.max=256m 事务内存
+#db.memory.transaction.max=16m
+#server.default_listen_address=0.0.0.0  网络监听，修改库时拒绝外网接入
+#dbms.security.auth_enabled=false  是否启用验证（忘记密码时使用）
+.......
+</code></pre>
+<h3>2.2 Neo4j使用</h3>
+<ol>
+<li><strong>数据存储格式介绍</strong></li>
+</ol>
+<blockquote>
+<p>Neo4j 存储数据以<code>节点（Nodes）、标签（Labels）、关系（Relationships）、属性（Properties）</code>四个部分组成；
+通常标签使用单数的名词(<strong>Person</strong>)表示，首字母大写，关系使用动词表示(<strong>MARRIED_TO</strong>)，全大写;
+<code>节点允许多个标签，关系只有一个类型</code>
+<img src="https://img2024.cnblogs.com/blog/3426265/202508/3426265-20250805193220987-1684687334.png" alt="" />
+<em>匹配节点，关系标签为<code>DIRECTED</code>的结果集，方向为 start -(directed) &gt; end，p变量用来存储完整路径</em>
+<strong>图中的圆代表节点（Nodes），箭头代表关系（Relationships），圆内的单词（Person、Movie）代表节点的标签，红框内显示的为属性（properties），最上面显示的为Neo4j的Cypher语句，后续详细介绍</strong></p>
+</blockquote>
+<ol>
+<li><strong>数据可视化</strong></li>
+</ol>
+<blockquote>
+<p>http://localhost:7474/browser/preview/ (本地)
+https://console-preview.neo4j.io/tools/explore (Aura)
+<strong>安装完毕后，neo4j自带一份浏览器操作页面</strong>
+<img src="https://img2024.cnblogs.com/blog/3426265/202508/3426265-20250805195222518-986203168.png" alt="" /></p>
+</blockquote>
+<h3>3. <strong>Cypher操作</strong></h3>
+<blockquote>
+<p>http://neo4j.com.cn/public/cypher/default.html (中文版)
+https://neo4j.com/docs/getting-started/cypher/
+https://neo4j.ac.cn/docs/cypher-manual/current/appendix/gql-conformance/ GQL标准
+https://kindatechnical.com/cypher/index.html (cypher例子解释比较全面)</p>
+</blockquote>
+<h6>3.1 <strong>增:</strong></h6>
+<pre><code>// 单节点
+CREATE (
+   &lt;node-name&gt;:&lt;label-name1&gt;:&lt;label-name2&gt;
+   { 	
+      &lt;Property1-name&gt;:&lt;Property1-Value&gt;
+      ........
+      &lt;Propertyn-name&gt;:&lt;Propertyn-Value&gt;
+   }
+)
+// 带关系
+CREATE (&lt;node1-name&gt;:&lt;label1-name&gt;)-
+	[&lt;relationship-name&gt;:&lt;relationship-label-name&gt;]
+	-&gt;(&lt;node2-name&gt;:&lt;label2-name&gt;)
+
+CREATE (dept:Dept { deptno:10,dname:"Accounting",location:"Hyderabad" })
+dept:节点名
+Dept:标签名
+{ deptno:10,dname:"Accounting",location:"Hyderabad" }: 节点属性
+CREATE (p1:Profile1)-[r1:LIKES]-&gt;(p2:Profile2)
+p1、p2:节点
+r1:关系
+</code></pre>
+<h6>3.2 <strong>查:</strong></h6>
+<pre><code>MATCH 
+(
+   &lt;node-name&gt;:&lt;label-name&gt;
+)
+###注意：Cypher查询组合是将前一个子句的结果表和图的状态作为输入传递给下一个子句，若输入结果集为空直接结束查询；
+解决方法：使用 OPTIONAL MATCH替换 MATCH 子句
+
+//子句组合，下面语句类似SQL：select xx from table where xxx
+MATCH (bornInEighties:Person)
+WHERE bornInEighties.born &gt;= 1980 AND bornInEighties.born &lt; 1990
+RETURN bornInEighties.name as name, bornInEighties.born as born
+ORDER BY born DESC
+//查询符合关系的图
+MATCH (m:Movie {title: 'The Matrix'})&lt;-[d:DIRECTED]-(p:Person)
+RETURN p.name as director
+
+MATCH (tom:Person {name:'Tom Hanks'})-[r]-&gt;(m:Movie)
+RETURN type(r) AS type, m.title AS movie
+d,r: 变量，存储的是关系结构
+m,p,tom: 变量，存储的是节点
+
+//可变路径，下面两种写法意义相同（版本不同），限制搜索的路径长度，至少一个关系，最多3条关系
+MATCH p=(:Person)-[:ACTED_IN]-{1,3}() RETURN p LIMIT 25;
+MATCH p=(:Person)-[:ACTED_IN*1..3]-() RETURN p LIMIT 25;（不符合GQL标准）
+//结果集：
+(:Person)-[:ACTED_IN]-&gt;(:Movie)
+(:Person)-[:ACTED_IN]-&gt;(:Movie)&lt;-[:ACTED_IN]-(:Person)
+(:Person)-[:ACTED_IN]-&gt;(:Movie)&lt;-[:ACTED_IN]-(:Person)-[:ACTED_IN]-&gt;(:Movie)
+
+// 查找两节点最短路径，SHORTEST 关键字是在 Neo4j 5.21 中引入的，它在功能上替代并扩展了 shortestPath() 和 allShortestPaths() 函数
+MATCH p = ALL SHORTEST (:Person {name:"Keanu Reeves"})--+(:Person {name:"Tom Cruise"})
+RETURN count(p) AS pathCount, length(p) AS pathLength
+
+//正则，and组合多条件，eg：or、not、xor
+MATCH (p:Person)
+WHERE p.name =~ '^A.*' AND p.age&gt;30
+RETURN p
+
+//子查询，对每个p节点做匹配，查询friend关系节点数
+MATCH (p:Person)
+CALL {
+    WITH p
+    MATCH (p)-[:FRIEND]-&gt;(friend)
+    RETURN count(friend) AS friendCount
+}
+WHERE friendCount &gt; 2
+RETURN p
+
+//组合查询，UNION、UNION DISTINCT 去重
+MATCH (n:Actor)
+RETURN n.name AS name
+UNION ALL
+MATCH (n:Movie)
+RETURN n.title AS name
+
+//跳过n行，可做分页
+MATCH (n:Person)
+RETURN n.name
+SKIP {n}
+LIMIT 10
+
+</code></pre>
+<h6>3.3 <strong>改:</strong></h6>
+<pre><code>//更新属性、删除属性
+MATCH (
+&lt;node-name&gt;:&lt;lable-name&gt;
+)
+WHERE &lt;condition&gt;
+SET &lt;property-name&gt;=&lt;Val&gt;,&lt;property1-name&gt;=&lt;Val1&gt;... / REMOVE &lt;property-name&gt;
+//条件更新
+MATCH (
+&lt;node-name&gt;:&lt;lable-name&gt;
+)
+SET &lt;property-name&gt;= CASE WHEN &lt;condition&gt; THEN &lt;Val1&gt; ELSE &lt;Val2&gt; END
+
+//更新时间为2020
+MATCH (a:Person)-[r:FRIENDS_WITH]-&gt;(b:Person)
+WHERE a.name = 'Alice' AND b.name = 'Bob'
+SET r.since = 2020
+RETURN r
+r:关系
+since：关系r的属性，值修改为2020
+</code></pre>
+<h6>3.4 <strong>删:</strong></h6>
+<pre><code>//删除节点
+MATCH (
+  &lt;node-name&gt;:&lt;lable-name&gt;
+)
+DELETE &lt;node-name&gt;
+
+//删除节点及节点的关系
+MATCH (
+  &lt;node-name&gt;:&lt;lable-name&gt;
+)
+DETACH DELETE &lt;node-name&gt;
+
+//删除关系
+MATCH (
+  &lt;node-name&gt;:&lt;lable-name&gt;
+) -[&lt;relationship-name&gt;:&lt;lable-name&gt;]-&gt;
+(
+&lt;node-name&gt;:&lt;lable-name&gt;
+)
+DELETE &lt;relationship-name&gt;
+</code></pre>
+<h6>3.5 <strong>函数:</strong> https://neo4j.ac.cn/docs/cypher-manual/current/functions/</h6>
+<pre><code>###类似SQL，具有MAX、MIN、AVG、SUM等函数
+collect(): 返回一个集合[...]
+</code></pre>
+<h3>4. 索引约束、执行优化</h3>
+<h6>4.1 索引</h6>
+<pre><code>搜索性能索引 
+CREATE [/TEXT/POINT/LOOK UP] INDEX INDEX_NAME FOR [node/path] on (&lt;property&gt;,&lt;property&gt;) 添加索引
+SHOW INDEXES / SHOW INDEXES YIELD * （指定显示索引信息列）  显示所有索引
+DROP INDEX index_name [IF EXISTS]  删除索引
+</code></pre>
+<blockquote>
+<ul>
+<li>范围索引：Neo4j 的默认索引。支持大多数类型的谓词。</li>
+<li>文本索引：只解决对 STRING 值进行操作的谓词。针对使用 STRING 运算符 CONTAINS 和 ENDS WITH 进行过滤的查询进行了优化。</li>
+<li>点索引：解决空间 POINT 值上的谓词。针对按距离或边界框内过滤的查询进行了优化。</li>
+<li>令牌查找索引：默认存在，仅解决节点标签和关系类型谓词（即它们无法解决任何基于属性过滤的谓词）。在 Neo4j 中创建数据库时，会存在两个令牌查找索引（一个用于节点标签，一个用于关系类型）。</li>
+</ul>
+</blockquote>
+<p><code>作用谓词</code>：</p>
+<blockquote>
+<p>范围: 等值 (=), 范围(&gt;),存在(is not null),成员(in),前缀(starts with)
+文本: 等值 (=), 成员(in),前缀(starts with),后缀(ends with),子字符(contains)
+点: 属性点值(<code>n.porp=point{k:v}</code>),边框内(<code>point.withinBBox(n.prop, l, h)</code>),
+距离(<code>point.distance(n.prop, center) &lt; = distance</code>)
+令牌: 节点标签(n:Lable),关系类型([r:Lable]),match或where查询Lable时作用</p>
+</blockquote>
+<pre><code>语义索引
+CREATE [FULLTEXT/VECTOR] INDEX FOR [node/path] on EACH [...] 添加索引
+db.index.fulltext.queryNodes 或 db.index.fulltext.queryRelationships  (全文索引查询)
+SHOW FULLTEXT INDEXES (查看索引状态,全文索引处在 POPULATING 不可使用)
+</code></pre>
+<blockquote>
+<ul>
+<li>全文索引：允许在 STRING 属性的内容中进行搜索，并比较查询字符串与数据库中存储的 STRING 值之间的相似性。</li>
+<li>向量索引：通过将节点或属性表示为多维空间中的向量，实现相似性搜索和复杂的分析查询。</li>
+</ul>
+</blockquote>
+<h6>4.2 约束</h6>
+<p>完整语法文档: https://neo4j.ac.cn/docs/cypher-manual/current/constraints/syntax/#create-property-existence-constraints</p>
+<pre><code>###非完整展示####
+属性唯一性:
+CREATE CONSTRAINT [constraint_name] [IF NOT EXISTS]FOR (n:LabelName)
+REQUIRE (n.propertyName_1, ..., n.propertyName_n) IS [NODE] UNIQUE
+属性存在:
+CREATE CONSTRAINT [constraint_name] [IF NOT EXISTS]
+FOR (n:LabelName)
+REQUIRE n.propertyName IS NOT NULL
+属性类型:
+CREATE CONSTRAINT [constraint_name] [IF NOT EXISTS]
+FOR (n:LabelName)
+REQUIRE n.propertyName {[IS] :: | IS TYPED} &lt;TYPE&gt;
+键:
+CREATE CONSTRAINT [constraint_name] [IF NOT EXISTS]
+FOR (n:LabelName)
+REQUIRE (n.propertyName_1, ..., n.propertyName_n) IS [NODE] KEY
+显示约束: SHOW CONSTRAINTS
+</code></pre>
+<blockquote>
+<ul>
+<li>属性唯一性约束确保所有具有特定标签的节点或所有具有特定类型的关系，其组合属性值是唯一的。</li>
+<li>属性存在性约束确保对于所有具有特定标签的节点或所有具有特定类型的关系，某个属性是存在的。企业版</li>
+<li>属性类型约束确保对于所有具有特定标签的节点或所有具有特定类型的关系，某个属性具有所需的属性类型。5.9 版引入 企业版</li>
+<li>键约束确保所有属性都存在，并且对于所有具有特定标签的节点或所有具有特定类型的关系，其组合属性值是唯一的。企业版</li>
+</ul>
+</blockquote>
+<h6>4.3 执行计划</h6>
+<ul>
+<li>4.3.1 Cypher 查询执行生命周期
+<img src="https://sanswl.github.io/_astro/neo4j-lifecircle.BvjiXkfW_Z1gVLyT.webp" alt="" /></li>
+</ul>
+<blockquote>
+<p>Cypher语句首先进行语句解析,到达规划器,规划器生成逻辑计划,此逻辑计划是规划器选定的最高效方案,逻辑计划此后转化为物理计划,物理计划操作数据库进行查询,物理计划执行由<code>Cypher运行时</code>负责.
+<code>Cypher运行时</code>：Cypher 提供了三种运行时：分段式 (slotted)【社区版默认】、流水线式 (pipelined)【企业版默认】 和并行式 (parallel)；具体不做描述，即选择控制运算符如何处理数据的几种方案，slotted运算符逐行处理，pipelined允许运算符合并批次处理，执行计划会将指令分成数块流水线</p>
+</blockquote>
+<ul>
+<li>4.3.2 查看执行计划</li>
+</ul>
+<blockquote>
+<p><code>profile:</code>获取执行过程,查询指令（Cypher语句）会执行并进行指令追踪，影响性能</p>
+</blockquote>
+<blockquote>
+<p><code>explain:</code> 获取执行计划,查询指令（Cypher语句）不会执行,操作符的二叉树</p>
+</blockquote>
+<pre><code>#执行计划：
+EXPLAIN
+MATCH (:Station { name: 'Denmark Hill' })&lt;-[:CALLS_AT]-(d:Stop)
+  ((:Stop)-[:NEXT]-&gt;(:Stop))+
+  (a:Stop)-[:CALLS_AT]-&gt;(:Station { name: 'Clapham Junction' })
+RETURN count(*)
+</code></pre>
+<pre><code>执行计划阅读流程为从下往上，NodeByLabelScan -&gt; ProduceResults(最终结果)   
++-------------------+----+------------------------------------------------------------------------+----------------+---------------------+
+| Operator          | Id | Details                                                                | Estimated Rows | Pipeline            |
++-------------------+----+------------------------------------------------------------------------+----------------+---------------------+
+| +ProduceResults   |  0 | `count(*)`                                                             |              1 | In Pipeline 3       |
+| |                 +----+------------------------------------------------------------------------+----------------+---------------------+
+| +EagerAggregation |  1 | count(*) AS `count(*)`                                                 |              1 |                     |
+| |                 +----+------------------------------------------------------------------------+----------------+                     |
+| +Filter           |  2 | NOT anon_1 = anon_5 AND anon_0.name = $autostring_0 AND anon_0:Station |              0 |                     |
+| |                 +----+------------------------------------------------------------------------+----------------+                     |
+| +Expand(All)      |  3 | (d)-[anon_1:CALLS_AT]-&gt;(anon_0)                                        |              0 |                     |
+| |                 +----+------------------------------------------------------------------------+----------------+                     |
+| +Filter           |  4 | d:Stop                                                                 |              0 |                     |
+| |                 +----+------------------------------------------------------------------------+----------------+                     |
+| +NullifyMetadata  | 14 |                                                                        |              0 |                     |
+| |                 +----+------------------------------------------------------------------------+----------------+                     |
+| +Repeat(Trail)    |  5 | (a) (...){1, *} (d)                                                    |              0 | Fused in Pipeline 2 |
+| |\                +----+------------------------------------------------------------------------+----------------+---------------------+
+| | +Filter         |  6 | isRepeatTrailUnique(anon_8) AND anon_7:Stop                            |              6 |                     |
+| | |               +----+------------------------------------------------------------------------+----------------+                     |
+| | +Expand(All)    |  7 | (anon_9)&lt;-[anon_8:NEXT]-(anon_7)                                       |              6 |                     |
+| | |               +----+------------------------------------------------------------------------+----------------+                     |
+| | +Filter         |  8 | anon_9:Stop                                                            |             11 |                     |
+| | |               +----+------------------------------------------------------------------------+----------------+                     |
+| | +Argument       |  9 | anon_9                                                                 |             13 | Fused in Pipeline 1 |
+| |                 +----+------------------------------------------------------------------------+----------------+---------------------+
+| +Filter           | 10 | a:Stop                                                                 |              0 |                     |
+| |                 +----+------------------------------------------------------------------------+----------------+                     |
+| +Expand(All)      | 11 | (anon_6)&lt;-[anon_5:CALLS_AT]-(a)                                        |              0 |                     |
+| |                 +----+------------------------------------------------------------------------+----------------+                     |
+| +Filter           | 12 | anon_6.name = $autostring_1                                            |              1 |                     |
+| |                 +----+------------------------------------------------------------------------+----------------+                     |
+| +NodeByLabelScan  | 13 | anon_6:Station                                                         |             10 | Fused in Pipeline 0 |
++-------------------+----+------------------------------------------------------------------------+----------------+---------------------+
+</code></pre>
+<h6>4.4 查询优化</h6>
+<h3>5. 管理</h3>
+<h6>5.1 访问控制</h6>
+<h3>6. 驱动库</h3>
 ]]></content:encoded>
         </item>
         <item>
@@ -349,6 +674,400 @@ $$</p>
 ]]></content:encoded>
         </item>
         <item>
+            <title><![CDATA[docker 安装 oracle database 问题记录]]></title>
+            <link>https://sanswl.github.io//posts/7a364d5c-6c2f/</link>
+            <guid isPermaLink="false">https://sanswl.github.io//posts/7a364d5c-6c2f/</guid>
+            <pubDate>Sun, 16 Mar 2025 00:00:00 GMT</pubDate>
+            <description><![CDATA[#pre 本地docker （WSL）安装运行 Oracle #1. 镜像处理 参考链接：https://www.cnblogs.com/w...]]></description>
+            <content:encoded><![CDATA[<p>#pre</p>
+<blockquote>
+<p>本地docker （WSL）安装运行 Oracle
+#1. 镜像处理
+参考链接：https://www.cnblogs.com/wuchangsoft/p/18344847
+<code>oracle</code> 镜像获取：</p>
+<ol>
+<li>https://container-registry.oracle.com/ords/f?p=113:10:::::: (Oracle官网,由于部分问题导致直接pull无法拉取)</li>
+<li>阿里云，参考链接里有个个人19c版本的</li>
+<li>官网下载Linux版本，自己编写image</li>
+</ol>
+</blockquote>
+<p>#2. 容器创建</p>
+<blockquote>
+<p>基本操作查看参考链接；
+介绍几个运行会遇到的问题：
+<code>1.</code> docker 目录卷绑定赋权，如果不提前赋权，容器创建对应目录会发生报错，出现权限问题，单纯使用<code>sudo</code>命令无法解决
+<code>2.</code> 查看日志等待安装完毕（<code>docker logs -ft container_id</code>）,进入容器里后使用命令</p>
+</blockquote>
+<pre><code> echo "DISABLE_OOB=ON" &gt;&gt; /opt/oracle/oradata/dbconfig/XE/sqlnet.ora
+</code></pre>
+<blockquote>
+<p>这里的XE是Oracle的实例（SID），如果按照上述参考链接运行，则这里的<code>XE</code>就为<code>ORCLCDB</code>，如果不处理会导致数据库连接不了
+**参考链接：**https://stackoverflow.com/questions/19660336/how-to-approach-a-got-minus-one-from-a-read-call-error-when-connecting-to-an-a
+<code>3.</code> 注意驱动版本问题，进入容器使用 <code>sqlplus -v</code> 查看驱动版本
+<img src="https://img2024.cnblogs.com/blog/3426265/202503/3426265-20250316205925218-407436518.png" alt="" /></p>
+</blockquote>
+<p>#3. Oracle链接</p>
+<blockquote>
+<ol>
+<li>切换库，<code>alter session set container=${your database}</code></li>
+<li>创建用户,<code>create user ${userName} identified by ${password}</code> (注意，这个用户只针对你创建时的库，连接时使用这个账号登录需要注意)</li>
+<li>驱动版本thin、oci、oci8;
+不同点 <strong>参考连接</strong> :https://stackoverflow.com/questions/21711085/what-is-the-difference-between-oci-and-thin-driver-connection-with-data-source-c
+<img src="https://img2024.cnblogs.com/blog/3426265/202503/3426265-20250316210138050-748327833.png" alt="" /></li>
+</ol>
+</blockquote>
+]]></content:encoded>
+        </item>
+        <item>
+            <title><![CDATA[WSL安装GO记录]]></title>
+            <link>https://sanswl.github.io//posts/d72babf7-8dfb/</link>
+            <guid isPermaLink="false">https://sanswl.github.io//posts/d72babf7-8dfb/</guid>
+            <pubDate>Thu, 13 Mar 2025 00:00:00 GMT</pubDate>
+            <description><![CDATA[在官网按照系统匹配的版本下载（手动下载避免apt等下载工具暂未更新包） rm -rf /usr/local/go && tar -C /u...]]></description>
+            <content:encoded><![CDATA[<h1>一：下载</h1>
+<blockquote>
+<p>在官网按照系统匹配的版本下载（手动下载避免<code>apt</code>等下载工具暂未更新包）</p>
+</blockquote>
+<p><img src="https://img2024.cnblogs.com/blog/3426265/202503/3426265-20250313212320916-812339548.png" alt="" /></p>
+<h1>二：解压、配置</h1>
+<blockquote>
+<p><code> rm -rf /usr/local/go &amp;&amp; tar -C /usr/local -xzf go1.24.1.linux-amd64.tar.gz</code>
+如果安装有旧的<code>go</code>，需要删除旧版本在安装新版本；官网提供的指令可能无法运行成功，需要<code>sudo</code>权限（注意：可能导致后续依赖无法import）
+配置env环境变量，<code>export PATH=$PATH:/usr/local/go/bin</code> 在 WSL 中修改 /etc/profile 文件内容 （官网教程到此为止）</p>
+</blockquote>
+<h1>三：问题</h1>
+<blockquote>
+<p><code>1.</code> 修改代理 <code>go env -w GOPROXY=https://goproxy.cn</code> (国内可能导入依赖失败，修改proxy处理)</p>
+</blockquote>
+<blockquote>
+<p><code>2.</code> &lt;a href="https://stackoverflow.com/questions/74325538/golang-mkdir-usr-local-go-pkg-mod-permission-denied"&gt;golang mkdir /usr/local/go/pkg/mod permission denied&lt;/a&gt; (这里是直接拿的Stackoverflow上的问题，具体解决方案差不多); &lt;br&gt;
+主要原因是<code>GOPATH</code> 和 <code>GOMODCACHE</code>这两个参数导致（使用<code>go env</code>查看），下图显示的为本人安装GO后此参数目录，使用<code>go mod tidy</code>报permission-denied，本人尝试了stackoverflow上描述的设置权限解决方案<code>chmod 775</code> 无法起效，而且在对应目录下使用<code>sudo mkdir xxx</code>依旧不起效；&lt;br&gt;
+<img src="https://img2024.cnblogs.com/blog/3426265/202503/3426265-20250313214136126-119204309.png" alt="" />
+解决：<code>export GOPATH=$HOME/go/lib</code> 在<code>/etc/profile</code>切换 <code>GOPATH</code>参数，<code>GOMODCACHE</code>可以直接使用<code>go env -w GOMODCACHE= </code>,默认保持
+<code>GOPATH</code> 和 <code>GOMODCACHE</code>处在同一目录，<code>GOMODCACHE</code> 将创建<code>pkg</code>目录</p>
+</blockquote>
+]]></content:encoded>
+        </item>
+        <item>
+            <title><![CDATA[MVCC 版本并发控制]]></title>
+            <link>https://sanswl.github.io//posts/b90d6666-487a/</link>
+            <guid isPermaLink="false">https://sanswl.github.io//posts/b90d6666-487a/</guid>
+            <pubDate>Tue, 11 Mar 2025 00:00:00 GMT</pubDate>
+            <description><![CDATA[必须是支持ACID的存储引擎，譬如Mysql的InnoDB <br> Mysql中mvcc的实现是利用undolog日志和 事务id 以及...]]></description>
+            <content:encoded><![CDATA[<h1>一 MVCC前提</h1>
+<blockquote>
+<p>必须是支持<code>ACID</code>的存储引擎，譬如Mysql的<code>InnoDB</code>  &lt;br&gt;
+Mysql中mvcc的实现是利用<code>undolog</code>日志和 <code>事务id</code> 以及 <code>ReadView</code>实现； &lt;br&gt;
+<code>ReadView（视图）</code>主要实现的完成事务间的数据可见性 &lt;br&gt;
+Mysql维护着redolog 、binlog、undolog三种日志：
+&lt;a href="https://blog.csdn.net/Weixiaohuai/article/details/117896523" name="redolog"&gt;redolog&lt;/a&gt;：用于数据库异常宕机的恢复工作；innodb存储引擎特有的；物理层；循环覆写 &lt;br&gt;
+&lt;a href="https://www.cnblogs.com/Presley-lpc/p/9619571.html" name="redolog"&gt;binlog&lt;/a&gt;: server共有、逻辑层；备份；追加写入append (需要配置文件开启默认关闭，每次重启都会创建新的binlog，且目录会创建mysql-binlog.index文件，内容为binlog文件名，会先从第一行读取，若第一行空会导致报错)&lt;br&gt;
+&lt;a href="https://zhuanlan.zhihu.com/p/383824552" name="redolog"&gt;undolog&lt;/a&gt; : 用于事务回滚，意为撤销或取消，以撤销操作为目的，将数据返回到某个状态的操作，实现事务的原子性</p>
+</blockquote>
+<h1>二 操作逻辑</h1>
+<blockquote>
+<p>利用Undolog文件中的回滚指针进行数据的回退,利用事务id和ReadView实现事务间的可见性 &lt;br&gt;
+二级索引可通过回表操作实现MVCC，另二级索引维护了自己最后操作的事务id <code>MAX_TRX_ID</code>,再通过 ReadView 中活跃事务id判断可见性；&lt;br&gt;
+DB_TRX_ID：记录最后一次修改该行的事务 ID。&lt;br&gt;
+DB_ROLL_PTR：指向 Undo Log 的指针，用于访问该行的历史版本。&lt;br&gt;</p>
+</blockquote>
+<h1>三 视图可见性</h1>
+<blockquote>
+<p>视图依据创建时间维护一组活跃的事务ids，和视图创建范围的事务id，包含生成此视图后下一个生成的事务id和生成视图前活跃事务的最小id，利用事务id关系完成可见性判断</p>
+</blockquote>
+<p><img src="https://img2024.cnblogs.com/blog/3426265/202503/3426265-20250311160745728-1401991784.png" alt="" /></p>
+]]></content:encoded>
+        </item>
+        <item>
+            <title><![CDATA[Bat脚本启动本地Kafka]]></title>
+            <link>https://sanswl.github.io//posts/bc002c30-f7c2/</link>
+            <guid isPermaLink="false">https://sanswl.github.io//posts/bc002c30-f7c2/</guid>
+            <pubDate>Tue, 11 Mar 2025 00:00:00 GMT</pubDate>
+            <description><![CDATA[本地启动Kafka，当需要测试多个Kafka Broker时使用脚本启动多个实例 编写 bat 文件，将下述代码填入保存，注意路径配置 ...]]></description>
+            <content:encoded><![CDATA[<h1>一：功能介绍</h1>
+<blockquote>
+<p>本地启动Kafka，当需要测试多个Kafka Broker时使用脚本启动多个实例</p>
+</blockquote>
+<h1>二：使用介绍</h1>
+<blockquote>
+<p>编写 <code>bat</code> 文件，将下述代码填入保存，<em><strong>注意路径配置</strong></em><br />
+<img src="https://img2024.cnblogs.com/blog/3426265/202503/3426265-20250311152627310-894820133.png" alt="" />
+<img src="https://img2024.cnblogs.com/blog/3426265/202503/3426265-20250311152735206-581968248.png" alt="" /></p>
+</blockquote>
+<pre><code>@echo off
+@REM 声明 UTF-8 编码，避免乱码问题
+chcp 65001
+setlocal enabledelayedexpansion  
+@REM 代表脚本启动的当前路径，如上图，脚本处于kafka\kafka_2.13-xxx
+set cds=%~dp0 
+set zookeeper_config=%cds%config\zookeeper.properties
+set zookeeper_Server=zookeeper-server-start.bat
+set kafka_server=%cds%bin\windows\kafka-server-start.bat
+set brokernum=0
+@REM %1 表示第一个参数，没有参数即server.properties缺失
+if "%1" == "" ( echo 请输入Kafka的Broker的配置文件路径 
+) else (
+
+   @REM 启动zookeeper
+   start "zookeeper" cmd /k call %cds%bin\windows\%zookeeper_Server%  %zookeeper_config%
+   timeout /t 2
+
+   @REM 按参数顺序启动 Kafka broker实例 打开的窗口按照 kafka_1、kafka_2命名格式
+   for %%i in (%*) do (
+    set /a brokernum += 1
+    @Rem  "kafka_"!brokernum!  窗口命名
+    start "kafka_"!brokernum! cmd /k call %kafka_server% %cds%%%i
+   )
+
+)
+
+
+
+pause &gt;nul
+</code></pre>
+]]></content:encoded>
+        </item>
+        <item>
+            <title><![CDATA[Eureka服务注册发现源码流程简析]]></title>
+            <link>https://sanswl.github.io//posts/f14c8695-a3e9/</link>
+            <guid isPermaLink="false">https://sanswl.github.io//posts/f14c8695-a3e9/</guid>
+            <pubDate>Tue, 11 Mar 2025 00:00:00 GMT</pubDate>
+            <description><![CDATA[客户端通过执行InstanceInfoReplicator#run()调用DiscoveryClient#register()发送http...]]></description>
+            <content:encoded><![CDATA[<h3>一： 服务的注册</h3>
+<blockquote>
+<p>客户端通过执行InstanceInfoReplicator#run()调用DiscoveryClient#register()发送http请求进行注册
+<code>InstanceInfoReplicator</code> 是更新同步当前服务到服务端的任务实现
+//A task for updating and replicating the local instanceinfo to the remote server.</p>
+</blockquote>
+<p><img src="https://img2024.cnblogs.com/blog/3426265/202503/3426265-20250311142333132-1751032344.png" alt="" /></p>
+<pre><code>//服务注册
+boolean register() throws Throwable {
+        logger.info("DiscoveryClient_{}: registering service...", this.appPathIdentifier);
+
+        EurekaHttpResponse httpResponse;
+        try {
+            httpResponse = this.eurekaTransport.registrationClient.register(this.instanceInfo);
+        } catch (Exception var3) {
+            Exception e = var3;
+            logger.warn("DiscoveryClient_{} - registration failed {}", new Object[]{this.appPathIdentifier, e.getMessage(), e});
+            throw e;
+        }
+
+        if (logger.isInfoEnabled()) {
+            logger.info("DiscoveryClient_{} - registration status: {}", this.appPathIdentifier, httpResponse.getStatusCode());
+        }
+
+        return httpResponse.getStatusCode() == Status.NO_CONTENT.getStatusCode();
+    }
+//服务续约
+/**
+eureka 初始化定时任务，依据设定的心跳时间触发 renew方法，检测服务是否宕机
+*/
+    boolean renew() {
+        try {
+            EurekaHttpResponse&lt;InstanceInfo&gt; httpResponse = this.eurekaTransport.registrationClient.sendHeartBeat(this.instanceInfo.getAppName(), this.instanceInfo.getId(), this.instanceInfo, (InstanceInfo.InstanceStatus)null);
+            logger.debug("DiscoveryClient_{} - Heartbeat status: {}", this.appPathIdentifier, httpResponse.getStatusCode());
+            if (httpResponse.getStatusCode() == Status.NOT_FOUND.getStatusCode()) {
+                this.REREGISTER_COUNTER.increment();
+                logger.info("DiscoveryClient_{} - Re-registering apps/{}", this.appPathIdentifier, this.instanceInfo.getAppName());
+                long timestamp = this.instanceInfo.setIsDirtyWithTime();
+                boolean success = this.register();
+                if (success) {
+                    this.instanceInfo.unsetIsDirty(timestamp);
+                }
+
+                return success;
+            } else {
+                return httpResponse.getStatusCode() == Status.OK.getStatusCode();
+            }
+        } catch (Throwable var5) {
+            Throwable e = var5;
+            logger.error("DiscoveryClient_{} - was unable to send heartbeat!", this.appPathIdentifier, e);
+            return false;
+        }
+    }
+</code></pre>
+<blockquote>
+<p>服务端服务注册接受和存储</p>
+</blockquote>
+<p><img src="https://img2024.cnblogs.com/blog/3426265/202503/3426265-20250311143033813-575040911.png" alt="" /></p>
+<pre><code>//eureka 客户端会通过此方法注册保存到eureka server 的内存中
+public void register(InstanceInfo registrant, int leaseDuration, boolean isReplication) {
+        this.read.lock();
+
+        try {
+            Map&lt;String, Lease&lt;InstanceInfo&gt;&gt; gMap = (Map)this.registry.get(registrant.getAppName());
+            EurekaMonitors.REGISTER.increment(isReplication);
+            if (gMap == null) {
+                ConcurrentHashMap&lt;String, Lease&lt;InstanceInfo&gt;&gt; gNewMap = new ConcurrentHashMap();
+                gMap = (Map)this.registry.putIfAbsent(registrant.getAppName(), gNewMap);
+                if (gMap == null) {
+                    gMap = gNewMap;
+                }
+            }
+
+            Lease&lt;InstanceInfo&gt; existingLease = (Lease)((Map)gMap).get(registrant.getId());
+            if (existingLease != null &amp;&amp; existingLease.getHolder() != null) {
+                Long existingLastDirtyTimestamp = ((InstanceInfo)existingLease.getHolder()).getLastDirtyTimestamp();
+                Long registrationLastDirtyTimestamp = registrant.getLastDirtyTimestamp();
+                logger.debug("Existing lease found (existing={}, provided={}", existingLastDirtyTimestamp, registrationLastDirtyTimestamp);
+                if (existingLastDirtyTimestamp &gt; registrationLastDirtyTimestamp) {
+                    logger.warn("There is an existing lease and the existing lease's dirty timestamp {} is greater than the one that is being registered {}", existingLastDirtyTimestamp, registrationLastDirtyTimestamp);
+                    logger.warn("Using the existing instanceInfo instead of the new instanceInfo as the registrant");
+                    registrant = (InstanceInfo)existingLease.getHolder();
+                }
+            } else {
+                synchronized(this.lock) {
+                    if (this.expectedNumberOfClientsSendingRenews &gt; 0) {
+                        ++this.expectedNumberOfClientsSendingRenews;
+                        this.updateRenewsPerMinThreshold();
+                    }
+                }
+
+                logger.debug("No previous lease information found; it is new registration");
+            }
+
+            Lease&lt;InstanceInfo&gt; lease = new Lease(registrant, leaseDuration);
+            if (existingLease != null) {
+                lease.setServiceUpTimestamp(existingLease.getServiceUpTimestamp());
+            }
+
+            ((Map)gMap).put(registrant.getId(), lease);
+            this.recentRegisteredQueue.add(new Pair(System.currentTimeMillis(), registrant.getAppName() + "(" + registrant.getId() + ")"));
+            if (!InstanceStatus.UNKNOWN.equals(registrant.getOverriddenStatus())) {
+                logger.debug("Found overridden status {} for instance {}. Checking to see if needs to be add to the overrides", registrant.getOverriddenStatus(), registrant.getId());
+                if (!this.overriddenInstanceStatusMap.containsKey(registrant.getId())) {
+                    logger.info("Not found overridden id {} and hence adding it", registrant.getId());
+                    this.overriddenInstanceStatusMap.put(registrant.getId(), registrant.getOverriddenStatus());
+                }
+            }
+
+            InstanceInfo.InstanceStatus overriddenStatusFromMap = (InstanceInfo.InstanceStatus)this.overriddenInstanceStatusMap.get(registrant.getId());
+            if (overriddenStatusFromMap != null) {
+                logger.info("Storing overridden status {} from map", overriddenStatusFromMap);
+                registrant.setOverriddenStatus(overriddenStatusFromMap);
+            }
+
+            InstanceInfo.InstanceStatus overriddenInstanceStatus = this.getOverriddenInstanceStatus(registrant, existingLease, isReplication);
+            registrant.setStatusWithoutDirty(overriddenInstanceStatus);
+            if (InstanceStatus.UP.equals(registrant.getStatus())) {
+                lease.serviceUp();
+            }
+
+            registrant.setActionType(ActionType.ADDED);
+            this.recentlyChangedQueue.add(new RecentlyChangedItem(lease));
+            registrant.setLastUpdatedTimestamp();
+            this.invalidateCache(registrant.getAppName(), registrant.getVIPAddress(), registrant.getSecureVipAddress());
+            logger.info("Registered instance {}/{} with status {} (replication={})", new Object[]{registrant.getAppName(), registrant.getId(), registrant.getStatus(), isReplication});
+        } finally {
+            this.read.unlock();
+        }
+
+    }
+</code></pre>
+<blockquote>
+<p>如图，registry保存有将注册、已注册到server 的eureka客户端 instance信息；
+将要注册到注册表registry中的instance，会创建一个map结构保存</p>
+</blockquote>
+<p><img src="https://img2024.cnblogs.com/blog/3426265/202503/3426265-20250311135621493-58076025.png" alt="" /></p>
+<h3>二： 服务的发现</h3>
+<blockquote>
+<p>依据上图展示，服务注册采取的是客户端创立DiscoveryClient建立http请求，同理利用此DiscoveryClient实例通过请求完成服务的发现，不再赘述；
+重点将放入服务发现的缓存和调用</p>
+</blockquote>
+<p><code>1.</code></p>
+<pre><code>//其他发现实现 DiscoveryClient#getAndUpdateDelta 包括更新等具体操作不作继续深入讨论
+    /**
+     * Gets the full registry information from the eureka server and stores it locally.
+     * When applying the full registry, the following flow is observed:
+     *
+     * if (update generation have not advanced (due to another thread))
+     *   atomically set the registry to the new registry
+     * fi
+     *
+     * @return the full registry information.
+     * @throws Throwable
+     *             on error.
+     */
+    private void getAndStoreFullRegistry() throws Throwable {
+        long currentUpdateGeneration = fetchRegistryGeneration.get();
+
+        logger.info("Getting all instance registry info from the eureka server");
+
+        Applications apps = null;
+        EurekaHttpResponse&lt;Applications&gt; httpResponse = clientConfig.getRegistryRefreshSingleVipAddress() == null
+                ? eurekaTransport.queryClient.getApplications(remoteRegionsRef.get())
+                : eurekaTransport.queryClient.getVip(clientConfig.getRegistryRefreshSingleVipAddress(), remoteRegionsRef.get());
+        if (httpResponse.getStatusCode() == Status.OK.getStatusCode()) {
+            apps = httpResponse.getEntity();
+        }
+        logger.info("The response status is {}", httpResponse.getStatusCode());
+
+        if (apps == null) {
+            logger.error("The application is null for some reason. Not storing this information");
+        } else if (fetchRegistryGeneration.compareAndSet(currentUpdateGeneration, currentUpdateGeneration + 1)) {
+    //存入本地服务缓存，即客户端将server端的服务注册信息缓存了一份，存在后续的缓存更新机制不做深入
+    //this.filterAndShuffle(apps) 目的是处理 UP 状态的实例以及 打乱保证随机性 
+    // Shuffling helps in randomizing the applications list there by avoiding the same instances receiving traffic during start ups.
+            localRegionApps.set(this.filterAndShuffle(apps));
+            logger.debug("Got full registry with apps hashcode {}", apps.getAppsHashCode());
+        } else {
+            logger.warn("Not updating applications as another thread is updating it already");
+        }
+    }
+</code></pre>
+<p><code>2.</code> 调用</p>
+<blockquote>
+<p>一： 利用DiscoveryClient获取实例的信息，再构建http请求
+二： 使用组件fegin完成服务转发</p>
+</blockquote>
+<pre><code>@FeignClient(value = "eurekaclient")
+public interface ApiService {
+
+   @RequestMapping(value = "/index",method = RequestMethod.GET)
+   String index();
+}
+
+/**
+等价于 new httpclient(eurekaClient) =&gt; 发送 /index 接口并接受到response
+*/
+</code></pre>
+]]></content:encoded>
+        </item>
+        <item>
+            <title><![CDATA[Spring cloud GateWay]]></title>
+            <link>https://sanswl.github.io//posts/47690543-517e/</link>
+            <guid isPermaLink="false">https://sanswl.github.io//posts/47690543-517e/</guid>
+            <pubDate>Tue, 11 Mar 2025 00:00:00 GMT</pubDate>
+            <description><![CDATA[GateWay本身既有webflux不能使用SpringMvc依赖，否则无法启动，spring-cloud-config依赖会导致配置文件...]]></description>
+            <content:encoded><![CDATA[<h1>一：配置</h1>
+<blockquote>
+<p>GateWay本身既有webflux不能使用SpringMvc依赖，否则无法启动，spring-cloud-config依赖会导致配置文件错误，需要移除依赖</p>
+</blockquote>
+<pre><code>spring:
+  application:
+    name: Gateway
+  cloud:
+    gateway:
+      routes:
+        - id: service1  #网关服务id
+          uri: http://localhost:8081   #目标服务器地址
+          predicates:    #接受一组规则，返回布尔值
+            - Path=/service1/**   #路由断言工厂名称 = 键值对  断言必须配置
+            - Weight= group{String: } ，weight{int: }
+          filters:
+          #自定义过滤工厂名称
+          - name: DemoGateWayFilterFactory
+            args:
+              name: foo,bar
+              value: 1,100
+          #uri跳过字段，例如   /service1/hello ==》/hello 
+          - StripPrefix=1
+</code></pre>
+<p><img src="https://img2024.cnblogs.com/blog/3426265/202503/3426265-20250311155047870-147292185.png" alt="" /></p>
+]]></content:encoded>
+        </item>
+        <item>
             <title><![CDATA[Markdown 样式指南]]></title>
             <link>https://sanswl.github.io//posts/markdown-style-guide/</link>
             <guid isPermaLink="false">https://sanswl.github.io//posts/markdown-style-guide/</guid>
@@ -558,6 +1277,627 @@ X&lt;sup&gt;n&lt;/sup&gt; + Y&lt;sup&gt;n&lt;/sup&gt; = Z&lt;sup&gt;n&lt;/sup&gt
 <p>大多数&lt;mark&gt;蝾螈&lt;/mark&gt;昼伏夜出，以昆虫、蠕虫等小生物为食。</p>
 <p>使用三个连字符 <code>---</code> 或 <code>&lt;hr&gt;</code> 标签，即可创建如下分隔线。</p>
 <hr />
+]]></content:encoded>
+        </item>
+        <item>
+            <title><![CDATA[MQTT报文解析]]></title>
+            <link>https://sanswl.github.io//posts/71d89d00-0f38/</link>
+            <guid isPermaLink="false">https://sanswl.github.io//posts/71d89d00-0f38/</guid>
+            <pubDate>Thu, 06 Mar 2025 00:00:00 GMT</pubDate>
+            <description><![CDATA[pass]]></description>
+            <content:encoded><![CDATA[<p>pass</p>
+]]></content:encoded>
+        </item>
+        <item>
+            <title><![CDATA[MQTT认证【一】]]></title>
+            <link>https://sanswl.github.io//posts/46918707-3b4d/</link>
+            <guid isPermaLink="false">https://sanswl.github.io//posts/46918707-3b4d/</guid>
+            <pubDate>Thu, 06 Mar 2025 00:00:00 GMT</pubDate>
+            <description><![CDATA[1. 认证架构图 Auth & ACL 钩子作为验证功能的扩展 EMQX 认证器 按照认证方式和数据源来划分，EMQX 内置了以下 8 种认...]]></description>
+            <content:encoded><![CDATA[<p><code>1. </code> 认证架构图
+<img src="https://docs.emqx.com/assets/emqx-authn-flow.nqM4_Tys.png" alt="" /></p>
+<blockquote>
+<p>Auth &amp; ACL 钩子作为验证功能的扩展
+EMQX 认证器
+按照认证方式和数据源来划分，EMQX 内置了以下 8 种认证器：</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>认证方式</th>
+<th>数据源</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>密码认证</td>
+<td>内置数据库</td>
+<td><a href="https://docs.emqx.com/zh/emqx/v5.0/access-control/authn/mnesia.html">使用内置数据库（Mnesia）进行密码认证</a></td>
+</tr>
+<tr>
+<td>密码认证</td>
+<td>MySQL</td>
+<td><a href="https://docs.emqx.com/zh/emqx/v5.0/access-control/authn/mysql.html">使用 MySQL 进行密码认证</a></td>
+</tr>
+<tr>
+<td>密码认证</td>
+<td>PostgreSQL</td>
+<td><a href="https://docs.emqx.com/zh/emqx/v5.0/access-control/authn/postgresql.html">使用 PostgreSQL 进行密码认证</a></td>
+</tr>
+<tr>
+<td>密码认证</td>
+<td>MongoDB</td>
+<td><a href="https://docs.emqx.com/zh/emqx/v5.0/access-control/authn/mongodb.html">使用 MongoDB 进行密码认证</a></td>
+</tr>
+<tr>
+<td>密码认证</td>
+<td>Redis</td>
+<td><a href="https://docs.emqx.com/zh/emqx/v5.0/access-control/authn/redis.html">使用 Redis 进行密码认证</a></td>
+</tr>
+<tr>
+<td>密码认证</td>
+<td>HTTP Server</td>
+<td><a href="https://docs.emqx.com/zh/emqx/v5.0/access-control/authn/http.html">使用 HTTP 服务进行密码认证</a></td>
+</tr>
+<tr>
+<td>JWT</td>
+<td>--</td>
+<td><a href="https://docs.emqx.com/zh/emqx/v5.0/access-control/authn/jwt.html">JWT 认证</a></td>
+</tr>
+<tr>
+<td>增强认证</td>
+<td>内置数据库</td>
+<td><a href="https://docs.emqx.com/zh/emqx/v5.0/access-control/authn/scram.html">MQTT 5.0 增强认证(SCRAM 认证)</a></td>
+</tr>
+</tbody>
+</table>
+<p><code>2. </code>认证接入</p>
+<blockquote>
+<p>官网提供DashBoard认证管理页，如果期望自定义Hook实现，需要使用插件扩展开发，以gRpc为例；
+<a href="https://github.com/emqx/emqx-extension-examples">官方给出的代码示例</a></p>
+</blockquote>
+]]></content:encoded>
+        </item>
+        <item>
+            <title><![CDATA[Java SPI机制使用]]></title>
+            <link>https://sanswl.github.io//posts/36930228-9c7f/</link>
+            <guid isPermaLink="false">https://sanswl.github.io//posts/36930228-9c7f/</guid>
+            <pubDate>Thu, 06 Mar 2025 00:00:00 GMT</pubDate>
+            <description><![CDATA[1. Service Provider Interface SPI描述 接口提供者优先规定接口要求，然后交由具体的实现者对接口进行内容的实现...]]></description>
+            <content:encoded><![CDATA[<p><code>1.</code> <code>Service Provider Interface</code> <strong>SPI描述</strong></p>
+<blockquote>
+<p>接口提供者优先规定接口要求，然后交由具体的实现者对接口进行内容的实现；</p>
+</blockquote>
+<p><code>2.</code> 实现</p>
+<pre><code>//1. 定义接口
+public Interface Demo_interface{
+    //具体实现者必须要实现的内容
+    void doexcute();
+}
+//2.实现接口
+public class Demo_Impl implements Demo_interface{
+  void doexcute(){
+      //pass  
+  }
+}
+//3. 使用ServiceLoader读取文件加载对象（ServiceLoader是主进程模块调用的）
+ServiceLoader&lt;Demo_interface&gt; demoServiceLoader = ServiceLoader.load(Demo_interface.class);
+
+</code></pre>
+<p><code>3</code> 举例说明</p>
+<blockquote>
+<p>以 JDBC 的 PostgreSQL 实现为例(Mysql同理)</p>
+</blockquote>
+<ul>
+<li>一 ： 实现类模块文件结构需要保持下图所示，其中文件名称<code>java.sql.Drive</code>就是JDBC定义需要被实现的接口，内容<code>org.postgresql.Driver</code>表明的是实现类的路径
+<img src="https://img2024.cnblogs.com/blog/3426265/202503/3426265-20250306164732074-568127332.png" alt="" /></li>
+<li>二 ：JDBC步骤说明；注册驱动 ==&gt; 创建连接 ==&gt; 构建执行器 ==&gt; 获取结果集 ==&gt; 关闭连接</li>
+</ul>
+<pre><code>//注册驱动，这里的DriverManager将会调用ServiceLoader将实现类注入
+public static void register() throws SQLException {
+        if (isRegistered()) {
+            throw new IllegalStateException("Driver is already registered. It can only be registered once.");
+        } else {
+            Driver registeredDriver = new Driver();
+            DriverManager.registerDriver(registeredDriver);
+            Driver.registeredDriver = registeredDriver;
+        }
+    }
+// 驱动初始化，DriverManager调用ServiceLoader（DriverManager属于java.sql包下）
+//调取时机，此方法是写在static块中，所以和class一起，故class.forName("")即可注册驱动
+ private static void loadInitialDrivers() {
+        String drivers;
+        try {
+            drivers = AccessController.doPrivileged(new PrivilegedAction&lt;String&gt;() {
+                public String run() {
+                    return System.getProperty("jdbc.drivers");
+                }
+            });
+        } catch (Exception ex) {
+            drivers = null;
+        }
+        // If the driver is packaged as a Service Provider, load it.
+        // Get all the drivers through the classloader
+        // exposed as a java.sql.Driver.class service.
+        // ServiceLoader.load() replaces the sun.misc.Providers()
+
+        AccessController.doPrivileged(new PrivilegedAction&lt;Void&gt;() {
+            public Void run() {
+
+                ServiceLoader&lt;Driver&gt; loadedDrivers = ServiceLoader.load(Driver.class);
+                Iterator&lt;Driver&gt; driversIterator = loadedDrivers.iterator();
+
+                /* Load these drivers, so that they can be instantiated.
+                 * It may be the case that the driver class may not be there
+                 * i.e. there may be a packaged driver with the service class
+                 * as implementation of java.sql.Driver but the actual class
+                 * may be missing. In that case a java.util.ServiceConfigurationError
+                 * will be thrown at runtime by the VM trying to locate
+                 * and load the service.
+                 *
+                 * Adding a try catch block to catch those runtime errors
+                 * if driver not available in classpath but it's
+                 * packaged as service and that service is there in classpath.
+                 */
+                try{
+                    while(driversIterator.hasNext()) {
+                        driversIterator.next();
+                    }
+                } catch(Throwable t) {
+                // Do nothing
+                }
+                return null;
+            }
+        });
+
+        println("DriverManager.initialize: jdbc.drivers = " + drivers);
+
+        if (drivers == null || drivers.equals("")) {
+            return;
+        }
+        String[] driversList = drivers.split(":");
+        println("number of Drivers:" + driversList.length);
+        for (String aDriver : driversList) {
+            try {
+                println("DriverManager.Initialize: loading " + aDriver);
+                Class.forName(aDriver, true,
+                        ClassLoader.getSystemClassLoader());
+            } catch (Exception ex) {
+                println("DriverManager.Initialize: load failed: " + ex);
+            }
+        }
+    }
+</code></pre>
+]]></content:encoded>
+        </item>
+        <item>
+            <title><![CDATA[布隆过滤器简述【Guava实现】]]></title>
+            <link>https://sanswl.github.io//posts/bc6a9c8c-fb95/</link>
+            <guid isPermaLink="false">https://sanswl.github.io//posts/bc6a9c8c-fb95/</guid>
+            <pubDate>Wed, 05 Mar 2025 00:00:00 GMT</pubDate>
+            <description><![CDATA[简述：布隆过滤器是一种利用对象表示，通过插入自定义缓存判断对象是否存在、不存在的技术； 举例，已Guava工具包中的布隆为例 <depen...]]></description>
+            <content:encoded><![CDATA[<ol>
+<li>简述：</li>
+</ol>
+<blockquote>
+<p>布隆过滤器是一种利用对象表示，通过插入自定义缓存判断对象是否存在、不存在的技术；</p>
+</blockquote>
+<ol>
+<li>举例，已Guava工具包中的布隆为例</li>
+</ol>
+<pre><code>       &lt;dependency&gt;
+            &lt;groupId&gt;com.google.guava&lt;/groupId&gt;
+            &lt;artifactId&gt;guava&lt;/artifactId&gt;
+        &lt;/dependency&gt;
+</code></pre>
+<blockquote>
+<p>在Guava工具包中实现的布隆过滤器，利用<code>hash</code>处理对象得出对应的<code>hashcode</code>，将<code>hashcode</code>存入一个
+<code>long</code>当中；<code>Guava</code>工具包中的布隆过滤器没有扩容，推荐创建时选择大于当前对象集2倍以上容量；</p>
+</blockquote>
+<p><img src="https://img2024.cnblogs.com/blog/3426265/202503/3426265-20250305163235202-1219754169.png" alt="" /></p>
+<blockquote>
+<p>当新对象通过<code>hash</code>算出新的值后，与当前的<code>Long</code>进行位与操作，如果位置已经是<code>1</code>经过与操作不变，<code>0</code>转变为<code>1</code>
+如果存在<code>0</code>转变为<code>1</code>，表明这个对象是一个新的对象，没有被缓存过（即之前不存在的对象）</p>
+</blockquote>
+<ol>
+<li>缺点</li>
+</ol>
+<blockquote>
+<ol>
+<li>经过上述简介，我们知道<code>guava</code>实现的布隆过滤器存放在一个<code>long</code>下，现在假使这个缓存不会扩容的情况下，当存入的对象越来越多后，<code>long</code>的所有位都会变为<code>1</code>,此时过滤器完全失去作用，会判断所有对象存在;</li>
+<li>假使两个对象存入<code>long</code>后刚好占据后4位，将后4位转变为<code>1</code>，这时一个新对象经过<code>hash</code>后需要转变<code>long</code>的后4位为<code>1</code>，这时同样会判为已存在，即 <code>1+3 = 4</code>，所以布隆过滤器判断已存在的对象不可信,即<code>不存在的一定不存在，存在的不一定存在</code>；</li>
+<li>扩容问题，当过滤器中位为<code>1</code>的位越来越多后，布隆过滤器得出的结果就越会失真，使用扩容增加<code>0</code>位可以提高准确率，但是使用扩容方案，扩容前的对象由于存在多个对象混合插入的情况（即同一个<code>1</code> 会代表多个对象），扩容后的缓存如何恢复扩容前缓存的记录。可以采取废弃旧布隆直接创建新布隆处理（需要缓存的对象是被持久化的），提高可用性的话可以考虑多个过滤器混合构成，当前一个不够用直接创建一个新的，拿前一个+后一个得出的结果作为最终结果</li>
+<li>删除问题，类似扩容即同一个<code>1</code>会代表多个对象,经过<code>hash</code>后无法准确的只删除当前对象的<code>1</code>，可以使<code>1</code>增加计数器处理，当删除操作发生时，如果计数器存在值，优先减去计数器的值；</li>
+</ol>
+</blockquote>
+<ol>
+<li>源码阅读</li>
+</ol>
+<pre><code>    MURMUR128_MITZ_32 {
+      //将对象放入容器
+        public &lt;T&gt; boolean put(T object, Funnel&lt;? super T&gt; funnel, int numHashFunctions, LockFreeBitArray bits) {
+            //过滤器相应的容器缓存
+            long bitSize = bits.bitSize();
+            //取对象相应的hash值
+            long hash64 = Hashing.murmur3_128().hashObject(object, funnel).asLong();
+            int hash1 = (int)hash64;
+            int hash2 = (int)(hash64 &gt;&gt;&gt; 32);
+            boolean bitsChanged = false;
+          // numHashFunctions 目的是为了减少hash冲突
+            for(int i = 1; i &lt;= numHashFunctions; ++i) {
+                int combinedHash = hash1 + i * hash2;
+                if (combinedHash &lt; 0) {
+                    combinedHash = ~combinedHash;
+                }
+              //判断是否有位变化，取余操作是为了避免越界
+                bitsChanged |= bits.set((long)combinedHash % bitSize);
+            }
+
+            return bitsChanged;
+        }
+
+        public &lt;T&gt; boolean mightContain(T object, Funnel&lt;? super T&gt; funnel, int numHashFunctions, LockFreeBitArray bits) {
+            long bitSize = bits.bitSize();
+            long hash64 = Hashing.murmur3_128().hashObject(object, funnel).asLong();
+            int hash1 = (int)hash64;
+            int hash2 = (int)(hash64 &gt;&gt;&gt; 32);
+
+            for(int i = 1; i &lt;= numHashFunctions; ++i) {
+                int combinedHash = hash1 + i * hash2;
+                if (combinedHash &lt; 0) {
+                    combinedHash = ~combinedHash;
+                }
+
+                if (!bits.get((long)combinedHash % bitSize)) {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+    }
+
+static final class LockFreeBitArray {
+        private static final int LONG_ADDRESSABLE_BITS = 6;
+        final AtomicLongArray data;
+        private final LongAddable bitCount;
+
+        LockFreeBitArray(long bits) {
+          // 确保类型转换安全，保证初始化的容器位全为初始值，避免精度丢失导致创建的容器存在值
+          /**
+              public static int checkedCast(long value) {
+                    int result = (int)value;
+                    Preconditions.checkArgument((long)result == value, "Out of range: %s", value);
+                    return result;
+              }
+          */
+            this(new long[Ints.checkedCast(LongMath.divide(bits, 64L, RoundingMode.CEILING))]);
+        }
+
+       boolean set(long bitIndex) {
+            if (this.get(bitIndex)) {
+                return false;
+            } else {
+              // &gt;&gt;&gt; 无符号移位操作，保证结果为正数 
+              /**
+                const a = 5; //  00000000000000000000000000000101
+                const b = 2; //  00000000000000000000000000000010
+                const c = -5; //  11111111111111111111111111111011
+
+                console.log(a &gt;&gt;&gt; b); //  00000000000000000000000000000001
+                // Expected output: 1
+
+                console.log(c &gt;&gt;&gt; b); //  00111111111111111111111111111110
+                // Expected output: 1073741822
+              */
+              // LONG_ADDRESSABLE_BITS = 6
+                int longIndex = (int)(bitIndex &gt;&gt;&gt; LONG_ADDRESSABLE_BITS );
+              //顶掉了符号位，和 &gt;&gt;&gt; 无符号操作保持一致
+                long mask = 1L &lt;&lt; (int)bitIndex;  // only cares about low 6 bits of bitIndex
+
+                long oldValue;
+                long newValue;
+                do {
+                    oldValue = this.data.get(longIndex);
+                    newValue = oldValue | mask;
+                    if (oldValue == newValue) {
+                        return false;
+                    }
+                } while(!this.data.compareAndSet(longIndex, oldValue, newValue));
+
+                this.bitCount.increment();
+                return true;
+            }
+        }
+    
+     boolean get(long bitIndex) {
+            return (this.data.get((int)(bitIndex &gt;&gt;&gt; 6)) &amp; 1L &lt;&lt; (int)bitIndex) != 0L;
+     }
+
+}
+</code></pre>
+]]></content:encoded>
+        </item>
+        <item>
+            <title><![CDATA[CNB【腾讯的云原生开发平台】部署 RAGFlow]]></title>
+            <link>https://sanswl.github.io//posts/c3ff95f8-2fac/</link>
+            <guid isPermaLink="false">https://sanswl.github.io//posts/c3ff95f8-2fac/</guid>
+            <pubDate>Tue, 04 Mar 2025 00:00:00 GMT</pubDate>
+            <description><![CDATA[为什么使用CNB 具有不错的免费额度使用，每月刷新，平台硬件配置够用8核 16G内存，完全满足常见的AI模型开发环境 练习docker、li...]]></description>
+            <content:encoded><![CDATA[<p><strong>为什么使用CNB</strong></p>
+<blockquote>
+<p>具有不错的免费额度使用，每月刷新，平台硬件配置够用8核 16G内存，完全满足常见的AI模型开发环境
+练习docker、linux，不再局限于WSL、vm硬件配置不够用，具有WebIDE（Vscode）
+https://docs.cnb.cool/zh/saas/pricing.html 【计费规则】
+https://docs.cnb.cool/zh/vscode/quick-start.html</p>
+</blockquote>
+<p><strong>开始部署</strong></p>
+<blockquote>
+<ol>
+<li>创建一个仓库,开启云平台初始化，使用cnb-init-from <s>https://your-git.com/your-repo.git</s>
+<s>git clone</s> https://github.com/infiniflow/ragflow.git [RAGFlow的GitHub仓库]
+<img src="https://img2024.cnblogs.com/blog/3426265/202503/3426265-20250304023728808-769939825.png" alt="" />
+<strong>初始化后，使其文件依赖结构如图所示，否则ragflow-server启动将失败</strong>
+<strong>OSError: [Errno loading yaml file config from /ragflow/conf/service_conf.yaml failed:] [Errno 2] No such file or directory: '/ragflow/conf/service_conf.yaml'</strong></li>
+</ol>
+</blockquote>
+<blockquote>
+<ol>
+<li>Ragflow的部署，待下载完Ragflow（大约9G），进入到上图的ragflow/docker目录下，启动 <code>docker compose -f docker-compose.yml up -d</code>
+使用 <code>docker logs -f ragflow-server</code> 查看是否启动完成</li>
+</ol>
+</blockquote>
+<blockquote>
+<ol>
+<li>https://ragflow.io/docs/dev/ 开始学习</li>
+</ol>
+</blockquote>
+]]></content:encoded>
+        </item>
+        <item>
+            <title><![CDATA[Mqtt学习使用]]></title>
+            <link>https://sanswl.github.io//posts/fbf8bdcc-8f34/</link>
+            <guid isPermaLink="false">https://sanswl.github.io//posts/fbf8bdcc-8f34/</guid>
+            <pubDate>Tue, 04 Mar 2025 00:00:00 GMT</pubDate>
+            <description><![CDATA[##1. 依赖导入 //V3 <dependency> <groupId>org.eclipse.paho</groupId> <artif...]]></description>
+            <content:encoded><![CDATA[<p>##1. 依赖导入</p>
+<pre><code>//V3
+&lt;dependency&gt;
+            &lt;groupId&gt;org.eclipse.paho&lt;/groupId&gt;
+            &lt;artifactId&gt;org.eclipse.paho.client.mqttv3&lt;/artifactId&gt;
+            &lt;version&gt;1.2.0&lt;/version&gt;
+&lt;/dependency&gt;
+// V5
+&lt;dependency&gt;
+            &lt;groupId&gt;org.eclipse.paho&lt;/groupId&gt;
+            &lt;artifactId&gt;org.eclipse.paho.mqttv5.client&lt;/artifactId&gt;
+            &lt;version&gt;1.2.5&lt;/version&gt;
+&lt;/dependency&gt;
+</code></pre>
+<p>##2. 客户端连接</p>
+<pre><code> String broker = "tcp://broker.emqx.io:1883";
+    String clientId = "demo_client";
+    MqttClient client;
+
+    public MqttServerClient()  {
+       try {
+           MqttClient client = new MqttClient(broker, clientId);
+        //MqttAsyncClient aClient = new MqttAsyncClient(broker, clientId); //异步通信客户端
+          MqttConnectOptions options = new MqttConnectOptions();
+        // 连接 MQTT Broker 的用户名密码
+          options.setUserName("username");
+          options.setPassword("password".toCharArray());
+        // 是否清除会话
+          options.setCleanSession(true);
+        // 心跳间隔，单位为秒
+          options.setKeepAliveInterval(300);
+        // 连接超时时间，单位为秒
+          options.setConnectionTimeout(30);
+        // 是否自动重连
+          options.setAutomaticReconnect(true);
+
+           client.connect(options);
+
+           //this.client = client;
+           //init();
+       }catch (MqttException e) {
+           e.printStackTrace();
+       }
+    }
+
+</code></pre>
+<p>##3. 客户端回调V3（V5增加了数个额外实现）</p>
+<pre><code>//方法在 CommsCallback.class  执行回调
+client.setCallback(new MqttCallback() {
+          //消息发送被接收到
+            public void messageArrived(String topic, MqttMessage message) throws Exception {
+                System.out.println("topic: " + topic);
+                System.out.println("qos: " + message.getQos());
+                System.out.println("message content: " + new String(message.getPayload()));
+            }
+
+            public void connectionLost(Throwable cause) {
+                System.out.println("connectionLost: " + cause.getMessage());
+            }
+
+            public void deliveryComplete(IMqttDeliveryToken token) {
+                System.out.println("deliveryComplete: " + token.isComplete());
+            }
+        });
+</code></pre>
+<p><strong>注意</strong>：<br />
+<code>1.</code>订阅的clientId 与 发布的clientId 需要保持不同，否则会发生客户端断连问题；
+<code>2.</code> 使用的ClientId 尽可能复杂些，避免连接失败（使用官方提供的broker = "tcp://broker.emqx.io:1883";）</p>
+<p>##4. 订阅Topic</p>
+<pre><code> public void subscribe(String topic) throws MqttException {
+       // qos的数量需要与topic一致，存在方法签名为 public void subscribe(String[] topicFilters, int[] qos) throws MqttException【批量】
+        int qos = 2;
+       client.subscribe(topic, qos);
+//允许插入回调 IMqttMessageListener
+   }
+//走的是异步客户端处理
+	    MqttToken token = new MqttToken(getClientId());
+		token.setActionCallback(callback);
+		token.setUserContext(userContext);
+		token.internalTok.setTopics(topicFilters);
+
+		MqttSubscribe register = new MqttSubscribe(topicFilters, qos);
+
+		comms.sendNoWait(register, token);
+</code></pre>
+<blockquote>
+<p><code>+</code>：单层通配，必须占据一个层级，例如 test/+/aa &lt;===&gt; {test/1/aa,test/abc/aa}、+、test/+
+<code>#</code>：多层通配，必须占用一个层级，且是最后一个字符，例如 test/#  &lt;===&gt; {test/aa，test/aa/bb... } 、test/demo/#、#
+<code>$share/{Share Name}/{Topic Filter}</code>: 共享订阅，{shareName}定义的共享组名，{topicFilter}主题名与publish的一致，例如 $share/test1/demo(sub)、 demo(pub)<br />
+<code>$queue/{Topic File}</code>: MQTT3.1.1
+<strong>负载均衡</strong> EMQX</p>
+</blockquote>
+<pre><code># etc/emqx.conf
+
+# 均衡策略
+broker.shared_subscription_strategy = random
+
+# 当设备离线，或者消息等级为 QoS1、QoS2，因各种各样原因设备没有回复 ACK 确认，消息会被重新派发至群组内其他的设备。
+broker.shared_dispatch_ack_enabled = false
+</code></pre>
+<p>##5. 发布msg</p>
+<pre><code> public void publish(String topic, String msg) throws MqttException {
+       int qos = 1;
+       MqttMessage message = new MqttMessage(msg.getBytes());
+       message.setQos(qos);
+       client.publish(topic, message);
+//允许插入回调 IMqttActionListener
+   }
+//同样走的是异步客户端处理
+		MqttDeliveryToken token = new MqttDeliveryToken(getClientId());
+		token.setActionCallback(callback);
+		token.setUserContext(userContext);
+		token.setMessage(message);
+		token.internalTok.setTopics(new String[] { topic });
+
+		MqttPublish pubMsg = new MqttPublish(topic, message);
+		comms.sendNoWait(pubMsg, token);
+</code></pre>
+<blockquote>
+<p><code>Retain(保留消息)</code> 生产者publish的消息会保存一份最新消息，当订阅此topic后会拿取到这份消息，且消息的retain属性为true，注意必须是后订阅读取到的消息才是保留消息
+<code>Will(遗嘱消息)</code>  在连接到指定Broker前指定，options.setWill()，会创建一个独立的Topic</p>
+</blockquote>
+]]></content:encoded>
+        </item>
+        <item>
+            <title><![CDATA[Java反射的应用]]></title>
+            <link>https://sanswl.github.io//posts/f242a294-4b91/</link>
+            <guid isPermaLink="false">https://sanswl.github.io//posts/f242a294-4b91/</guid>
+            <pubDate>Mon, 03 Mar 2025 00:00:00 GMT</pubDate>
+            <description><![CDATA[按照对象属性排序（对象属性需要实现Comparable 【常见数据类型】） public static int getOrder(Demo...]]></description>
+            <content:encoded><![CDATA[<blockquote>
+<p>按照对象属性排序（对象属性需要实现Comparable 【常见数据类型】）</p>
+</blockquote>
+<pre><code> public static int getOrder(Demo o1, Demo o2, String order) {
+        Field field;
+        Comparable value1;
+        Comparable value2;
+        try {
+            //查看是否存在排序字段，需要保证排序字段存在且是可比较的，即实现了Comparable接口
+            field = Arrays.stream(o1.getClass().getDeclaredFields()).filter(f -&gt; f.getName().equals(order)).findAny().orElse(null);
+            if (field != null) {
+                // 要求的排序字段不存在，不排序
+                return 0;
+            }
+            field.setAccessible(true);
+            value1 = (Comparable) field.get(o1);
+            value2 = (Comparable) field.get(o2);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return value1.compareTo(value2);
+    }
+</code></pre>
+<blockquote>
+<p>类方法的直接调用,声明一个顶级父类（接口），读取继承/实现父类的子实现方法，直接调用</p>
+</blockquote>
+<pre><code> //定义一个接口，用于定义处理器
+    public interface ArrayHandler{
+
+    }
+//检查方法签名是否符合要求
+  private Function&lt;List, List&gt; checkMethodAndReturnFunction(ArrayHandler arrayHandler,Method method) {
+        Type returnType = method.getReturnType();
+        Type[] parameterTypes = method.getParameterTypes();
+        //check if the method parameter is List &amp;&amp; parameter size is 1 and return type is List
+        if (parameterTypes.length == 1 &amp;&amp; parameterTypes[0] == List.class &amp;&amp; returnType == List.class){
+           //相当于一个Function，内部是invoke方法调用，当function调用apply时执行
+              return list -&gt; {
+               try {
+                   return (List) method.invoke(arrayHandler,list);
+               } catch (IllegalAccessException e) {
+                   throw new RuntimeException(e);
+               } catch (InvocationTargetException e) {
+                   throw new RuntimeException(e);
+               }
+           };
+        }
+        log.warn("The method {} is not a valid array handler, please check the method signature.",method.getName());
+        return null;
+    }
+
+ public  List applyArrayLinkedHandler(List input){
+        List output=input;
+        synchronized(monitor){
+            if(ARRAYHANDLER.isEmpty()){
+                log.warn("No array handler found, please add array handler first.");
+                return output;
+            }
+            for(Function&lt;List,List&gt; handler:ARRAYHANDLER){
+                output=handler.apply(output);
+            }
+        }
+        return output;
+    }
+
+    public  List applyArrayHandler(List input) {
+        List output = input;
+        Set result;
+        synchronized (monitor) {
+            if (ARRAYHANDLER.isEmpty()) {
+                log.warn("No array handler found, please add array handler first.");
+                return output;
+            }
+            result = new HashSet();
+            for (Function&lt;List, List&gt; handler : ARRAYHANDLER) {
+                 result.addAll(handler.apply(output));
+            }
+        }
+        return new ArrayList&lt;&gt;(result);
+    }
+</code></pre>
+<blockquote>
+<p>代理模式(以Jdk代理为例【jdk代理需要类实现接口】)，反射获取对象以及方法的执行</p>
+</blockquote>
+<pre><code> public static void main(String[] args) {
+        Demo helloWorld = new HelloWorldImpl();
+        Demo proxy = new JDKProxyDemo(helloWorld).getProxy(Demo.class);
+        String s = proxy.sayHello("world");
+        System.out.println();
+    }
+
+    static class JDKProxyDemo implements InvocationHandler {
+        private Demo demo;
+        public JDKProxyDemo(Demo demo) {
+            this.demo = demo;
+        }
+        @Override
+        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+            System.out.println("JDKProxyDemo invoke");
+            return method.invoke(demo, args);
+        }
+
+        public &lt;T&gt;  T getProxy(Class&lt;T&gt; clazz){
+            return (T) Proxy.newProxyInstance(clazz.getClassLoader(), new Class[]{clazz}, this);
+        }
+    }
+</code></pre>
 ]]></content:encoded>
         </item>
         <item>
@@ -897,6 +2237,30 @@ src/content/posts/2025/03/apple.md   -&gt;  example.com/es/posts/banana/
 ✅ src/content/posts/guides/Theme Guide-zh.md
 ✨ Formatted 3 files successfully
 </code></pre>
+]]></content:encoded>
+        </item>
+        <item>
+            <title><![CDATA[IntelliJ IDEA maven plugin build 失败 Process finished with exit code -1073741819 (0xC0000005)]]></title>
+            <link>https://sanswl.github.io//posts/f6f5e263-ddf6/</link>
+            <guid isPermaLink="false">https://sanswl.github.io//posts/f6f5e263-ddf6/</guid>
+            <pubDate>Fri, 06 Dec 2024 00:00:00 GMT</pubDate>
+            <description><![CDATA[Help | Find Action or Idea全局搜索:双shift 输入registry打开，寻找注册表中debugger.att...]]></description>
+            <content:encoded><![CDATA[<ol>
+<li>
+<p><code>Help | Find Action</code> or <code>Idea全局搜索:双shift </code>
+<img src="https://img2024.cnblogs.com/blog/3426265/202412/3426265-20241206190713167-1373741840.png" alt="" /></p>
+</li>
+<li>
+<p>输入registry打开，寻找注册表中<code>debugger.attch.to.process.action</code>，默认处于开启状态，将其关闭即可。
+<img src="https://img2024.cnblogs.com/blog/3426265/202412/3426265-20241206191050756-938598207.png" alt="" /></p>
+</li>
+<li>
+<p>清除缓存，重启即可</p>
+</li>
+</ol>
+<blockquote>
+<p>参考链接：https://youtrack.jetbrains.com/issue/IDEA-203172.</p>
+</blockquote>
 ]]></content:encoded>
         </item>
         <item>
