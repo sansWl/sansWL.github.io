@@ -5,7 +5,7 @@
         <title>SANSWL's BLOG</title>
         <link>https://sanswl.github.io//</link>
         <description>Retypeset是一款基于Astro框架的静态博客主题，中文名为重新编排。本主题以活版印字为设计灵感，通过建立全新的视觉规范，对所有页面进行重新编排，打造纸质书页般的阅读体验，再现版式之美。所见皆为细节，方寸尽显优雅。</description>
-        <lastBuildDate>Sat, 20 Sep 2025 10:39:31 GMT</lastBuildDate>
+        <lastBuildDate>Sat, 20 Sep 2025 11:19:25 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>Astro-Theme-Retypeset with Feed for Node.js</generator>
         <language>zh</language>
@@ -579,55 +579,6 @@ DB_ROLL_PTR：指向 Undo Log 的指针，用于访问该行的历史版本。&l
 ]]></content:encoded>
         </item>
         <item>
-            <title><![CDATA[Bat脚本启动本地Kafka]]></title>
-            <link>https://sanswl.github.io//posts/bc002c30-f7c2/</link>
-            <guid isPermaLink="false">https://sanswl.github.io//posts/bc002c30-f7c2/</guid>
-            <pubDate>Tue, 11 Mar 2025 00:00:00 GMT</pubDate>
-            <description><![CDATA[本地启动Kafka，当需要测试多个Kafka Broker时使用脚本启动多个实例 编写 bat 文件，将下述代码填入保存，注意路径配置 ...]]></description>
-            <content:encoded><![CDATA[<h1>一：功能介绍</h1>
-<blockquote>
-<p>本地启动Kafka，当需要测试多个Kafka Broker时使用脚本启动多个实例</p>
-</blockquote>
-<h1>二：使用介绍</h1>
-<blockquote>
-<p>编写 <code>bat</code> 文件，将下述代码填入保存，<em><strong>注意路径配置</strong></em><br />
-<img src="https://img2024.cnblogs.com/blog/3426265/202503/3426265-20250311152627310-894820133.png" alt="" />
-<img src="https://img2024.cnblogs.com/blog/3426265/202503/3426265-20250311152735206-581968248.png" alt="" /></p>
-</blockquote>
-<pre><code>@echo off
-@REM 声明 UTF-8 编码，避免乱码问题
-chcp 65001
-setlocal enabledelayedexpansion  
-@REM 代表脚本启动的当前路径，如上图，脚本处于kafka\kafka_2.13-xxx
-set cds=%~dp0 
-set zookeeper_config=%cds%config\zookeeper.properties
-set zookeeper_Server=zookeeper-server-start.bat
-set kafka_server=%cds%bin\windows\kafka-server-start.bat
-set brokernum=0
-@REM %1 表示第一个参数，没有参数即server.properties缺失
-if "%1" == "" ( echo 请输入Kafka的Broker的配置文件路径 
-) else (
-
-   @REM 启动zookeeper
-   start "zookeeper" cmd /k call %cds%bin\windows\%zookeeper_Server%  %zookeeper_config%
-   timeout /t 2
-
-   @REM 按参数顺序启动 Kafka broker实例 打开的窗口按照 kafka_1、kafka_2命名格式
-   for %%i in (%*) do (
-    set /a brokernum += 1
-    @Rem  "kafka_"!brokernum!  窗口命名
-    start "kafka_"!brokernum! cmd /k call %kafka_server% %cds%%%i
-   )
-
-)
-
-
-
-pause &gt;nul
-</code></pre>
-]]></content:encoded>
-        </item>
-        <item>
             <title><![CDATA[Eureka服务注册发现源码流程简析]]></title>
             <link>https://sanswl.github.io//posts/f14c8695-a3e9/</link>
             <guid isPermaLink="false">https://sanswl.github.io//posts/f14c8695-a3e9/</guid>
@@ -831,6 +782,55 @@ public interface ApiService {
 /**
 等价于 new httpclient(eurekaClient) =&gt; 发送 /index 接口并接受到response
 */
+</code></pre>
+]]></content:encoded>
+        </item>
+        <item>
+            <title><![CDATA[Bat脚本启动本地Kafka]]></title>
+            <link>https://sanswl.github.io//posts/bc002c30-f7c2/</link>
+            <guid isPermaLink="false">https://sanswl.github.io//posts/bc002c30-f7c2/</guid>
+            <pubDate>Tue, 11 Mar 2025 00:00:00 GMT</pubDate>
+            <description><![CDATA[本地启动Kafka，当需要测试多个Kafka Broker时使用脚本启动多个实例 编写 bat 文件，将下述代码填入保存，注意路径配置 ...]]></description>
+            <content:encoded><![CDATA[<h1>一：功能介绍</h1>
+<blockquote>
+<p>本地启动Kafka，当需要测试多个Kafka Broker时使用脚本启动多个实例</p>
+</blockquote>
+<h1>二：使用介绍</h1>
+<blockquote>
+<p>编写 <code>bat</code> 文件，将下述代码填入保存，<em><strong>注意路径配置</strong></em><br />
+<img src="https://img2024.cnblogs.com/blog/3426265/202503/3426265-20250311152627310-894820133.png" alt="" />
+<img src="https://img2024.cnblogs.com/blog/3426265/202503/3426265-20250311152735206-581968248.png" alt="" /></p>
+</blockquote>
+<pre><code>@echo off
+@REM 声明 UTF-8 编码，避免乱码问题
+chcp 65001
+setlocal enabledelayedexpansion  
+@REM 代表脚本启动的当前路径，如上图，脚本处于kafka\kafka_2.13-xxx
+set cds=%~dp0 
+set zookeeper_config=%cds%config\zookeeper.properties
+set zookeeper_Server=zookeeper-server-start.bat
+set kafka_server=%cds%bin\windows\kafka-server-start.bat
+set brokernum=0
+@REM %1 表示第一个参数，没有参数即server.properties缺失
+if "%1" == "" ( echo 请输入Kafka的Broker的配置文件路径 
+) else (
+
+   @REM 启动zookeeper
+   start "zookeeper" cmd /k call %cds%bin\windows\%zookeeper_Server%  %zookeeper_config%
+   timeout /t 2
+
+   @REM 按参数顺序启动 Kafka broker实例 打开的窗口按照 kafka_1、kafka_2命名格式
+   for %%i in (%*) do (
+    set /a brokernum += 1
+    @Rem  "kafka_"!brokernum!  窗口命名
+    start "kafka_"!brokernum! cmd /k call %kafka_server% %cds%%%i
+   )
+
+)
+
+
+
+pause &gt;nul
 </code></pre>
 ]]></content:encoded>
         </item>
